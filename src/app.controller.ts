@@ -6,12 +6,9 @@ import {Person} from './dto/person.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/:name')
-  public sayHello(
-    @Param('name') name: string,
-    @Query('title') title: string,
-  ): string {
-    return this.appService.sayHelloToName(title, name);
+  @Get('/')
+  public getPeople(): Person[] {
+    return this.appService.getPeople();
   }
 
   @Post('/')

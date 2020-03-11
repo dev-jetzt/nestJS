@@ -4,12 +4,14 @@ import { Person } from 'dto/person.dto';
 @Injectable()
 export class AppService {
 
-  sayHelloToName(title: string, name: string): string {
-    const renderedTitle = title || '';
-    return `Hello ${renderedTitle} ${name}`;
+  private iAmADatabaseNow: Person[] = [];
+
+  public getPeople(): Person[] {
+    return this.iAmADatabaseNow;
   }
 
   public postPerson(person: Person): string {
+    this.iAmADatabaseNow.push(person);
     const {firstName, lastName, age} = person;
     return `I got the person ${firstName} ${lastName} which is ${age} years old.`;
   }

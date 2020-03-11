@@ -16,23 +16,23 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/api/Sebastian')
-      .expect(200)
-      .expect('Hello  Sebastian');
-  });
-
-  it('/ (POST)', () => {
+  it('/ (POST) and (GET)', async () => {
     const person = new Person();
     person.firstName = 'TestFirstName';
     person.lastName = 'TestLastName';
     person.age = 55;
 
-    return request(app.getHttpServer())
+    await request(app.getHttpServer())
       .post('/api')
       .expect(201)
       .send(person)
       .expect('I got the person TestFirstName TestLastName which is 55 years old.');
+
+    const response = await request(app.getHttpServer())
+      .get('/api')
+      .expect(200);
+
+    expect(response.body).toHaveLength(1);
+    expect(response.body[0]).toEqual(person);
   });
 });
