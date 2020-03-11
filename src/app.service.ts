@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  root(): string {
-    return 'Hello World!';
+
+  sayHelloToName(title: string, name: string): string {
+    const renderedTitle = title || '';
+    return `Hello ${renderedTitle} ${name}`;
   }
+
 }
