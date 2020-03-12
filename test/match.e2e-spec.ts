@@ -62,4 +62,20 @@ describe('MatchController (e2e)', () => {
 
     expect(response.body).toBeDefined();
   });
+
+  it('/ (POST)', async () => {
+
+    const fakeMatch = new MatchDto();
+    fakeMatch.homeTeam = 'FC Heimmannschaft';
+    fakeMatch.guestTeam = 'Spvgg. GastMannschaft';
+    fakeMatch.homeTeamGoals = 2;
+    fakeMatch.guestTeamGoals = 4;
+
+    const response = await request(app.getHttpServer())
+      .post('/api/match')
+      .send(fakeMatch)
+      .expect(201);
+
+    expect(response.body).toBeDefined();
+  });
 });
