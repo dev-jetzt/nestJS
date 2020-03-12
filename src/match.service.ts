@@ -1,20 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { Match } from './dto/match.dto';
+import { MatchDto } from './dto/match.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MatchEntity } from './entities/match.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MatchService {
 
-  private iAmADatabaseNow: Match[] = [
-    Match.create(
-      '1860 München',
-      'MSV Duisburg',
-      0,
-      4,
-      true,
-    ),
-  ];
+  constructor(
+    @InjectRepository(MatchEntity) private readonly matchRepository: Repository<MatchEntity>,
+  ) {}
 
-  public getAllMatches(): Match[] {
-    return this.iAmADatabaseNow;
+  public async getAllMatches(): Promise<MatchDto[]> {
+    const allMatches = await this.matchRepository.find();
+    return allMatches.map((match: MatchEntity) => MatchDto.createFromEntity(match));
+  }
+
+  public async createNewMatch(match: MatchDto): Promise<MatchDto> {
+    const newMatchEntity = MatchEntity.createFromDto(match);
+    const savedMatch = await this.matchRepository.save(newMatchEntity);
+    return MatchDto.createFromEntity(savedMatch);
   }
 }

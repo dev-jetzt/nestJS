@@ -1,23 +1,19 @@
-export class Match {
+import { MatchEntity } from '../entities/match.entity';
+
+export class MatchDto {
     public homeTeam: string;
     public guestTeam: string;
     public homeTeamGoals: number;
     public guestTeamGoals: number;
     public isMatchFinished: boolean;
 
-    public static create(
-        homeTeam: string,
-        guestTeam: string,
-        homeTeamGoals: number,
-        guestTeamGoals: number,
-        isMatchFinished: boolean,
-    ): Match {
-        const match = new Match();
-        match.homeTeam = homeTeam;
-        match.guestTeam = guestTeam;
-        match.homeTeamGoals = homeTeamGoals;
-        match.guestTeamGoals = guestTeamGoals;
-        match.isMatchFinished = isMatchFinished;
+    public static createFromEntity(matchEntity: MatchEntity): MatchDto {
+        const match = new MatchDto();
+        match.homeTeam = matchEntity.homeTeam;
+        match.guestTeam = matchEntity.guestTeam;
+        match.homeTeamGoals = matchEntity.homeTeamGoals;
+        match.guestTeamGoals = matchEntity.guestTeamGoals;
+        match.isMatchFinished = matchEntity.isMatchFinished;
         return match;
     }
 }
