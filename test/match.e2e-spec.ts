@@ -31,37 +31,42 @@ describe('MatchController (e2e)', () => {
     await dbConnection.synchronize(true);
   });
 
-  it('/ (GET)', async () => {
+  describe(`/ (GET)`, () => {
 
-    const fakeMatch = new MatchEntity();
-    fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
-    fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
-    fakeMatch.homeTeamGoals = 2;
-    fakeMatch.guestTeamGoals = 4;
+    it('/ (GET)', async () => {
 
-    await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
 
-    const response = await request(app.getHttpServer())
-      .get('/api/matches')
-      .expect(200);
+      await dbConnection.getRepository(MatchEntity).save(fakeMatch);
 
-    expect(response.body).toHaveLength(1);
-  });
+      const response = await request(app.getHttpServer())
+        .get('/api/matches')
+        .expect(200);
 
-  it('/ (POST)', async () => {
+      expect(response.body).toHaveLength(1);
+    });
 
-    const fakeMatch = new MatchDto();
-    fakeMatch.homeTeam = TEAM.FC_INGOLSTADT;
-    fakeMatch.guestTeam = TEAM.TSV_1860_MUENCHEN;
-    fakeMatch.homeTeamGoals = 2;
-    fakeMatch.guestTeamGoals = 4;
+    it('/ (GET) by ID', async () => {
 
-    const response = await request(app.getHttpServer())
-      .post('/api/match')
-      .send(fakeMatch)
-      .expect(201);
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
 
-    expect(response.body).toBeDefined();
+      const savedMatch = await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      const response = await request(app.getHttpServer())
+        .get(`/api/match/${savedMatch.id}`)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+    });
+
   });
 
   it('/ (POST)', async () => {
@@ -81,7 +86,6 @@ describe('MatchController (e2e)', () => {
   });
 
   it('/ (POST) failes', async () => {
-
     const fakeMatch = {
       homeTeam: TEAM.FC_INGOLSTADT,
       guestTeam: TEAM.TSV_1860_MUENCHEN,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MatchDto } from './dto/match.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchEntity } from './entities/match.entity';
@@ -20,5 +20,10 @@ export class MatchService {
     const newMatchEntity = MatchEntity.createFromDto(match);
     const savedMatch = await this.matchRepository.save(newMatchEntity);
     return MatchDto.createFromEntity(savedMatch);
+  }
+
+  public async getMatchById(matchId: string): Promise<MatchDto> {
+    const foundMatch = await this.matchRepository.findOne(matchId);
+    return MatchDto.createFromEntity(foundMatch);
   }
 }

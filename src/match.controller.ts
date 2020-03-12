@@ -12,6 +12,11 @@ export class MatchController {
     return this.matchService.getAllMatches();
   }
 
+  @Get('/match/:matchId')
+  public async getMatchById(@Param('matchId') matchId: string): Promise<MatchDto> {
+    return this.matchService.getMatchById(matchId);
+  }
+
   @Post('/match')
   public async createNewMatch(
     @Body() newMatch: MatchDto,
