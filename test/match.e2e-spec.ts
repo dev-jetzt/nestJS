@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
+import { v4 as uuidV4} from 'uuid';
 import { MatchModule } from '../src/match.module';
 import { Connection } from 'typeorm';
 import { MatchEntity } from '../src/entities/match.entity';
@@ -50,21 +51,40 @@ describe('MatchController (e2e)', () => {
       expect(response.body).toHaveLength(1);
     });
 
-    it('/ (GET) by ID', async () => {
+    describe(`/ (GET) by ID`, () => {
 
-      const fakeMatch = new MatchEntity();
-      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
-      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
-      fakeMatch.homeTeamGoals = 2;
-      fakeMatch.guestTeamGoals = 4;
+      it('/ (GET) found by ID', async () => {
 
-      const savedMatch = await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 2;
+        fakeMatch.guestTeamGoals = 4;
 
-      const response = await request(app.getHttpServer())
-        .get(`/api/match/${savedMatch.id}`)
-        .expect(200);
+        const savedMatch = await dbConnection.getRepository(MatchEntity).save(fakeMatch);
 
-      expect(response.body).toBeDefined();
+        const response = await request(app.getHttpServer())
+          .get(`/api/match/${savedMatch.id}`)
+          .expect(200);
+
+        expect(response.body).toBeDefined();
+      });
+
+      it('/ (GET) non existing', async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 2;
+        fakeMatch.guestTeamGoals = 4;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        await request(app.getHttpServer())
+          .get(`/api/match/${uuidV4()}`)
+          .expect(404);
+      });
+
     });
 
   });

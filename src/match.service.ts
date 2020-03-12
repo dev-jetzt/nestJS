@@ -24,6 +24,11 @@ export class MatchService {
 
   public async getMatchById(matchId: string): Promise<MatchDto> {
     const foundMatch = await this.matchRepository.findOne(matchId);
+
+    if (!foundMatch) {
+      throw new NotFoundException('The match could not be found');
+    }
+
     return MatchDto.createFromEntity(foundMatch);
   }
 }
