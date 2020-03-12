@@ -87,6 +87,22 @@ describe('MatchController (e2e)', () => {
         expect(response.body.just4fun).toBeDefined();
       });
 
+      it('/ (GET) invalid matchID', async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 2;
+        fakeMatch.guestTeamGoals = 4;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        const response = await request(app.getHttpServer())
+          .get(`/api/match/invalid`)
+          .expect(400);
+
+        expect(response.body.just4fun).toBeDefined();
+      });
     });
 
   });

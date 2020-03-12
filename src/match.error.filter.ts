@@ -1,7 +1,7 @@
 import { ExceptionFilter, ArgumentsHost, HttpException, Catch } from '@nestjs/common';
 import {Response, Request} from 'express';
 
-@Catch()
+@Catch(HttpException)
 export class MatchErrorFilter implements ExceptionFilter {
 
     catch(exception: HttpException, host: ArgumentsHost) {
