@@ -5,6 +5,7 @@ import { MatchModule } from '../src/match.module';
 import { Connection } from 'typeorm';
 import { MatchEntity } from '../src/entities/match.entity';
 import { MatchDto } from '../src/dto/match.dto';
+import { TEAM } from '../src/dto/team.enum';
 
 describe('MatchController (e2e)', () => {
 
@@ -33,8 +34,8 @@ describe('MatchController (e2e)', () => {
   it('/ (GET)', async () => {
 
     const fakeMatch = new MatchEntity();
-    fakeMatch.homeTeam = 'FC Heimmannschaft';
-    fakeMatch.guestTeam = 'Spvgg. GastMannschaft';
+    fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+    fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
     fakeMatch.homeTeamGoals = 2;
     fakeMatch.guestTeamGoals = 4;
 
@@ -50,8 +51,8 @@ describe('MatchController (e2e)', () => {
   it('/ (POST)', async () => {
 
     const fakeMatch = new MatchDto();
-    fakeMatch.homeTeam = 'FC Heimmannschaft';
-    fakeMatch.guestTeam = 'Spvgg. GastMannschaft';
+    fakeMatch.homeTeam = TEAM.FC_INGOLSTADT;
+    fakeMatch.guestTeam = TEAM.TSV_1860_MUENCHEN;
     fakeMatch.homeTeamGoals = 2;
     fakeMatch.guestTeamGoals = 4;
 
@@ -66,8 +67,8 @@ describe('MatchController (e2e)', () => {
   it('/ (POST)', async () => {
 
     const fakeMatch = new MatchDto();
-    fakeMatch.homeTeam = 'FC Heimmannschaft';
-    fakeMatch.guestTeam = 'Spvgg. GastMannschaft';
+    fakeMatch.homeTeam = TEAM.FC_INGOLSTADT;
+    fakeMatch.guestTeam = TEAM.TSV_1860_MUENCHEN;
     fakeMatch.homeTeamGoals = 2;
     fakeMatch.guestTeamGoals = 4;
 
@@ -77,5 +78,20 @@ describe('MatchController (e2e)', () => {
       .expect(201);
 
     expect(response.body).toBeDefined();
+  });
+
+  it('/ (POST) failes', async () => {
+
+    const fakeMatch = {
+      homeTeam: TEAM.FC_INGOLSTADT,
+      guestTeam: TEAM.TSV_1860_MUENCHEN,
+      homeTeamGoals: 1,
+      guestTeamGoals: -2,
+    };
+
+    await request(app.getHttpServer())
+      .post('/api/match')
+      .send(fakeMatch)
+      .expect(400);
   });
 });

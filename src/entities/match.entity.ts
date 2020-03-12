@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { MatchDto } from 'dto/match.dto';
+import { MatchDto } from '../dto/match.dto';
+import { TEAM } from '../dto/team.enum';
 
 @Entity()
 export class MatchEntity {
@@ -7,11 +8,17 @@ export class MatchEntity {
     @PrimaryGeneratedColumn('uuid')
     public id: string;
 
-    @Column()
-    public homeTeam: string;
+    @Column({
+        type: 'enum',
+        enum: TEAM,
+    })
+    public homeTeam: TEAM;
 
-    @Column()
-    public guestTeam: string;
+    @Column({
+        type: 'enum',
+        enum: TEAM,
+    })
+    public guestTeam: TEAM;
 
     @Column()
     public homeTeamGoals: number;

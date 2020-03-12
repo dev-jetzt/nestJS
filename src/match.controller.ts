@@ -1,8 +1,9 @@
-import { Get, Controller, Param, Query, Body, Post } from '@nestjs/common';
+import { Get, Controller, Param, Query, Body, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MatchService } from './match.service';
 import {MatchDto} from './dto/match.dto';
 
 @Controller('/api')
+@UsePipes(ValidationPipe)
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
