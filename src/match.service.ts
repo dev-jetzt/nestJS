@@ -3,6 +3,7 @@ import { MatchDto } from './dto/match.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchEntity } from './entities/match.entity';
 import { Repository } from 'typeorm';
+import { MatchNotFoundException } from './exceptions/match.notfound.exception';
 
 @Injectable()
 export class MatchService {
@@ -26,7 +27,7 @@ export class MatchService {
     const foundMatch = await this.matchRepository.findOne(matchId);
 
     if (!foundMatch) {
-      throw new NotFoundException('The match could not be found');
+      throw new MatchNotFoundException();
     }
 
     return MatchDto.createFromEntity(foundMatch);

@@ -80,9 +80,11 @@ describe('MatchController (e2e)', () => {
 
         await dbConnection.getRepository(MatchEntity).save(fakeMatch);
 
-        await request(app.getHttpServer())
+        const response = await request(app.getHttpServer())
           .get(`/api/match/${uuidV4()}`)
           .expect(404);
+
+        expect(response.body.just4fun).toBeDefined();
       });
 
     });
