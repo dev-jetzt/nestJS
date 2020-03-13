@@ -136,4 +136,71 @@ describe('MatchController (e2e)', () => {
       .send(fakeMatch)
       .expect(400);
   });
+
+  describe(`/ (PUT)`, () => {
+
+    it(`/ (PUT) successfully`, async () => {
+
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+
+      const savedMatch = await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      const updatedMatch = Object.assign(new MatchDto(), fakeMatch) as MatchDto;
+      updatedMatch.homeTeamGoals = 0;
+      updatedMatch.guestTeamGoals = 0;
+
+      const response = await request(app.getHttpServer())
+        .put(`/api/match/${savedMatch.id}`)
+        .send(updatedMatch)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.homeTeamGoals).toBe(0);
+      expect(response.body.guestTeamGoals).toBe(0);
+    });
+
+    it(`/ (PUT) match not found`, async () => {
+
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+
+      await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      const updatedMatch = Object.assign(new MatchDto(), fakeMatch) as MatchDto;
+      updatedMatch.homeTeamGoals = 0;
+      updatedMatch.guestTeamGoals = 0;
+
+      await request(app.getHttpServer())
+        .put(`/api/match/${uuidV4()}`)
+        .send(updatedMatch)
+        .expect(404);
+    });
+
+    it(`/ (PUT) invalid new values`, async () => {
+
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+
+      const savedMatch = await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      const updatedMatch = Object.assign(new MatchDto(), fakeMatch) as MatchDto;
+      updatedMatch.homeTeamGoals = 0;
+      updatedMatch.guestTeamGoals = -2;
+
+      await request(app.getHttpServer())
+        .put(`/api/match/${savedMatch.id}`)
+        .send(updatedMatch)
+        .expect(400);
+    });
+  });
 });

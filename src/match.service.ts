@@ -32,4 +32,20 @@ export class MatchService {
 
     return MatchDto.createFromEntity(foundMatch);
   }
+
+  public async updateMatch(matchId: string, match: MatchDto): Promise<MatchDto> {
+    const matchToBeChanged = await this.matchRepository.findOne(matchId);
+
+    if (!matchToBeChanged) {
+      throw new MatchNotFoundException();
+    }
+
+    const { homeTeamGoals, guestTeamGoals } = match;
+    matchToBeChanged.homeTeamGoals = homeTeamGoals;
+    matchToBeChanged.guestTeamGoals = guestTeamGoals;
+
+    const updatedMatch = await this.matchRepository.save(matchToBeChanged);
+
+    return MatchDto.createFromEntity(updatedMatch);
+  }
 }
