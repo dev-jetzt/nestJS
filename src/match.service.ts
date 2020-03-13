@@ -61,4 +61,14 @@ export class MatchService {
 
     return MatchDto.createFromEntity(finishedMatch);
   }
+
+  public async deleteMatch(matchId: string): Promise<void> {
+    const matchToBeDeleted = await this.matchRepository.findOne(matchId);
+
+    if (!matchToBeDeleted) {
+      throw new MatchNotFoundException();
+    }
+
+    await this.matchRepository.delete(matchId);
+  }
 }

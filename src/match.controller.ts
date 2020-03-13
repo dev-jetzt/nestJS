@@ -1,4 +1,4 @@
-import { Get, Controller, Param, Query, Body, Post, UsePipes, ValidationPipe, UseFilters, Put, Patch } from '@nestjs/common';
+import { Get, Controller, Param, Query, Body, Post, UsePipes, ValidationPipe, UseFilters, Put, Patch, Delete, HttpCode } from '@nestjs/common';
 import { MatchService } from './match.service';
 import {MatchDto} from './dto/match.dto';
 import { MatchErrorFilter } from './match.error.filter';
@@ -40,5 +40,13 @@ export class MatchController {
     @Param('id', ParseUUIDPipe) matchId: string,
   ): Promise<MatchDto> {
     return this.matchService.finishMatch(matchId);
+  }
+
+  @Delete('/match/:id')
+  @HttpCode(204)
+  public async deleteMatch(
+    @Param('id', ParseUUIDPipe) matchId: string,
+  ): Promise<void> {
+    await this.matchService.deleteMatch(matchId);
   }
 }
