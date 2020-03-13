@@ -203,4 +203,59 @@ describe('MatchController (e2e)', () => {
         .expect(400);
     });
   });
+
+  describe(`/ (PATCH)`, () => {
+
+    it(`/ (PATCH) successfully`, async () => {
+
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+      fakeMatch.isMatchFinished = false;
+
+      const savedMatch = await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      const response = await request(app.getHttpServer())
+        .patch(`/api/match/${savedMatch.id}/finish`)
+        .expect(200);
+
+      expect(response.body).toBeDefined();
+      expect(response.body.isMatchFinished).toBe(true);
+    });
+
+    it(`/ (PATCH) match not found`, async () => {
+
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+      fakeMatch.isMatchFinished = false;
+
+      await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      await request(app.getHttpServer())
+        .patch(`/api/match/${uuidV4()}/finish`)
+        .expect(404);
+    });
+
+    it(`/ (PATCH) invalid matchID`, async () => {
+
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+      fakeMatch.isMatchFinished = false;
+
+      await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      await request(app.getHttpServer())
+        .patch(`/api/match/invalid/finish`)
+        .expect(400);
+    });
+
+  });
 });

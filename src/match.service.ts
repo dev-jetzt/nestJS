@@ -10,7 +10,7 @@ export class MatchService {
 
   constructor(
     @InjectRepository(MatchEntity) private readonly matchRepository: Repository<MatchEntity>,
-  ) {}
+  ) { }
 
   public async getAllMatches(): Promise<MatchDto[]> {
     const allMatches = await this.matchRepository.find();
@@ -47,5 +47,18 @@ export class MatchService {
     const updatedMatch = await this.matchRepository.save(matchToBeChanged);
 
     return MatchDto.createFromEntity(updatedMatch);
+  }
+
+  public async finishMatch(matchId: string): Promise<MatchDto> {
+    const matchToBeFinished = await this.matchRepository.findOne(matchId);
+
+    if (!matchToBeFinished) {
+      throw new MatchNotFoundException();
+    }
+
+    matchToBeFinished.isMatchFinished = true;
+    const finishedMatch = await this.matchRepository.save(matchToBeFinished);
+
+    return MatchDto.createFromEntity(finishedMatch);
   }
 }
