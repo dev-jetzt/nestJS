@@ -49,4 +49,10 @@ export class MatchController {
   ): Promise<void> {
     await this.matchService.deleteMatch(matchId);
   }
+
+  @Delete('/matches')
+  @HttpCode(204)
+  public async deleteAllMatches(): Promise<void> {
+    await this.matchService.deleteAllMatches();
+  }
 }

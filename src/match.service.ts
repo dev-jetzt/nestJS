@@ -71,4 +71,8 @@ export class MatchService {
 
     await this.matchRepository.delete(matchId);
   }
+
+  public async deleteAllMatches(): Promise<void> {
+    await this.matchRepository.clear();
+  }
 }

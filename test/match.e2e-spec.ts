@@ -307,5 +307,26 @@ describe('MatchController (e2e)', () => {
         .delete(`/api/match/invalid`)
         .expect(400);
     });
+
+    it(`/ (DELETE) all matches`, async () => {
+
+      const fakeMatch = new MatchEntity();
+      fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+      fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+      fakeMatch.isMatchFinished = false;
+
+      await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+      await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+      await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+      await request(app.getHttpServer())
+      .delete('/api/matches')
+      .expect(204);
+
+      const allMatchesInDb = await dbConnection.getRepository(MatchEntity).find();
+      expect(allMatchesInDb).toHaveLength(0);
+    });
   });
 });
