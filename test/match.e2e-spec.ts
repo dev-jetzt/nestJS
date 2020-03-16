@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
-import { v4 as uuidV4} from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 import { MatchModule } from '../src/match.module';
 import { Connection } from 'typeorm';
 import { MatchEntity } from '../src/entities/match.entity';
@@ -322,11 +322,124 @@ describe('MatchController (e2e)', () => {
       await dbConnection.getRepository(MatchEntity).save(fakeMatch);
 
       await request(app.getHttpServer())
-      .delete('/api/matches')
-      .expect(204);
+        .delete('/api/matches')
+        .expect(204);
 
       const allMatchesInDb = await dbConnection.getRepository(MatchEntity).find();
       expect(allMatchesInDb).toHaveLength(0);
+    });
+  });
+
+  describe(`/ (PATCH) goals`, () => {
+
+    describe(`PATCH homegoals`, () => {
+
+      it(`/ (PATCH) invalid machID`, async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 0;
+        fakeMatch.guestTeamGoals = 0;
+        fakeMatch.isMatchFinished = false;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        await request(app.getHttpServer())
+          .patch(`/api/match/invalidID/homegoal`)
+          .expect(400);
+      });
+
+      it(`/ (PATCH) match not found`, async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 0;
+        fakeMatch.guestTeamGoals = 0;
+        fakeMatch.isMatchFinished = false;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        await request(app.getHttpServer())
+          .patch(`/api/match/${uuidV4}/homegoal`)
+          .expect(404);
+      });
+
+      it(`/ (PATCH) valid mach`, async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 0;
+        fakeMatch.guestTeamGoals = 0;
+        fakeMatch.isMatchFinished = false;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        const response = await request(app.getHttpServer())
+          .patch(`/api/match/${fakeMatch.id}/homegoal`)
+          .expect(200);
+
+        expect(response.body.homeTeamGoals).toBe(1);
+        expect(response.body.guestTeamGoals).toBe(0);
+      });
+
+    });
+
+    describe(`PATCH guestgoald`, () => {
+
+      it(`/ (PATCH) invalid machID`, async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 0;
+        fakeMatch.guestTeamGoals = 0;
+        fakeMatch.isMatchFinished = false;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        await request(app.getHttpServer())
+          .patch(`/api/match/invalidID/guestgoal`)
+          .expect(400);
+      });
+
+      it(`/ (PATCH) match not found`, async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 0;
+        fakeMatch.guestTeamGoals = 0;
+        fakeMatch.isMatchFinished = false;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        await request(app.getHttpServer())
+          .patch(`/api/match/${uuidV4}/guestgoal`)
+          .expect(404);
+      });
+
+      it(`/ (PATCH) valid mach`, async () => {
+
+        const fakeMatch = new MatchEntity();
+        fakeMatch.homeTeam = TEAM.FC_BAYERN_2;
+        fakeMatch.guestTeam = TEAM.SPVGG_UNTERHACHING;
+        fakeMatch.homeTeamGoals = 0;
+        fakeMatch.guestTeamGoals = 0;
+        fakeMatch.isMatchFinished = false;
+
+        await dbConnection.getRepository(MatchEntity).save(fakeMatch);
+
+        const response = await request(app.getHttpServer())
+          .patch(`/api/match/${fakeMatch.id}/guestgoal`)
+          .expect(200);
+
+        expect(response.body.homeTeamGoals).toBe(0);
+        expect(response.body.guestTeamGoals).toBe(1);
+      });
+
     });
   });
 });

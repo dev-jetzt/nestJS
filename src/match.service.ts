@@ -75,4 +75,32 @@ export class MatchService {
   public async deleteAllMatches(): Promise<void> {
     await this.matchRepository.clear();
   }
+
+  public async scoreHomeGoal(matchId: string): Promise<MatchDto> {
+    const foundMatch = await this.matchRepository.findOne(matchId);
+
+    if (!foundMatch) {
+      throw new MatchNotFoundException();
+    }
+
+    foundMatch.homeTeamGoals++;
+
+    const updatedMatch = await this.matchRepository.save(foundMatch);
+
+    return MatchDto.createFromEntity(updatedMatch);
+  }
+
+  public async scoreGuestGoal(matchId: string): Promise<MatchDto> {
+    const foundMatch = await this.matchRepository.findOne(matchId);
+
+    if (!foundMatch) {
+      throw new MatchNotFoundException();
+    }
+
+    foundMatch.guestTeamGoals++;
+
+    const updatedMatch = await this.matchRepository.save(foundMatch);
+
+    return MatchDto.createFromEntity(updatedMatch);
+  }
 }

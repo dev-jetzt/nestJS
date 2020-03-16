@@ -42,6 +42,20 @@ export class MatchController {
     return this.matchService.finishMatch(matchId);
   }
 
+  @Patch('/match/:id/homegoal')
+  public async homeTeamShotAGoal(
+    @Param('id', ParseUUIDPipe) matchId: string,
+  ): Promise<MatchDto> {
+    return this.matchService.scoreHomeGoal(matchId);
+  }
+
+  @Patch('/match/:id/guestgoal')
+  public async guestTeamShotAGoal(
+    @Param('id', ParseUUIDPipe) matchId: string,
+  ): Promise<MatchDto> {
+    return this.matchService.scoreGuestGoal(matchId);
+  }
+
   @Delete('/match/:id')
   @HttpCode(204)
   public async deleteMatch(
