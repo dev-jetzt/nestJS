@@ -12,8 +12,15 @@ export class MatchService {
     @InjectRepository(MatchEntity) private readonly matchRepository: Repository<MatchEntity>,
   ) { }
 
-  public async getAllMatches(): Promise<MatchDto[]> {
-    const allMatches = await this.matchRepository.find();
+  public async getAllMatches(finished?: boolean): Promise<MatchDto[]> {
+    let allMatches = [];
+
+    if (finished !== undefined) {
+      allMatches = await this.matchRepository.find({ where: { isMatchFinished: finished } });
+    } else {
+      allMatches = await this.matchRepository.find();
+    }
+
     return allMatches.map((match: MatchEntity) => MatchDto.createFromEntity(match));
   }
 

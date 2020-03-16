@@ -11,8 +11,10 @@ export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
   @Get('/matches')
-  public async getAllMatches(): Promise<MatchDto[]> {
-    return this.matchService.getAllMatches();
+  public async getAllMatches(
+    @Query('finished') finished: boolean,
+  ): Promise<MatchDto[]> {
+    return this.matchService.getAllMatches(finished);
   }
 
   @Get('/match/:matchId')
