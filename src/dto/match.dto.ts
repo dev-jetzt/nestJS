@@ -1,5 +1,5 @@
 import { MatchEntity } from '../entities/match.entity';
-import { IsNotEmpty, IsString, Max, Min, IsEnum, IsDefined } from 'class-validator';
+import { IsNotEmpty, IsString, Max, Min, IsEnum, IsDefined, IsOptional } from 'class-validator';
 import { TEAM } from './team.enum';
 
 export class MatchDto {
@@ -22,6 +22,10 @@ export class MatchDto {
 
     public isMatchFinished: boolean;
 
+    @IsOptional()
+    @Min(0)
+    public numberOfViewers: number;
+
     public static createFromEntity(matchEntity: MatchEntity): MatchDto {
         const match = new MatchDto();
         match.homeTeam = matchEntity.homeTeam;
@@ -29,6 +33,11 @@ export class MatchDto {
         match.homeTeamGoals = matchEntity.homeTeamGoals;
         match.guestTeamGoals = matchEntity.guestTeamGoals;
         match.isMatchFinished = matchEntity.isMatchFinished;
+
+        if (matchEntity.numberOfViewers) {
+            match.numberOfViewers = matchEntity.numberOfViewers;
+        }
+
         return match;
     }
 }

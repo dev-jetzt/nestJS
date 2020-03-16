@@ -107,34 +107,54 @@ describe('MatchController (e2e)', () => {
 
   });
 
-  it('/ (POST)', async () => {
+  describe(`/ POST`, () => {
 
-    const fakeMatch = new MatchDto();
-    fakeMatch.homeTeam = TEAM.FC_INGOLSTADT;
-    fakeMatch.guestTeam = TEAM.TSV_1860_MUENCHEN;
-    fakeMatch.homeTeamGoals = 2;
-    fakeMatch.guestTeamGoals = 4;
+    it('/ (POST) successfully', async () => {
 
-    const response = await request(app.getHttpServer())
-      .post('/api/match')
-      .send(fakeMatch)
-      .expect(201);
+      const fakeMatch = new MatchDto();
+      fakeMatch.homeTeam = TEAM.FC_INGOLSTADT;
+      fakeMatch.guestTeam = TEAM.TSV_1860_MUENCHEN;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
 
-    expect(response.body).toBeDefined();
-  });
+      const response = await request(app.getHttpServer())
+        .post('/api/match')
+        .send(fakeMatch)
+        .expect(201);
 
-  it('/ (POST) failes', async () => {
-    const fakeMatch = {
-      homeTeam: TEAM.FC_INGOLSTADT,
-      guestTeam: TEAM.TSV_1860_MUENCHEN,
-      homeTeamGoals: 1,
-      guestTeamGoals: -2,
-    };
+      expect(response.body).toBeDefined();
+    });
 
-    await request(app.getHttpServer())
-      .post('/api/match')
-      .send(fakeMatch)
-      .expect(400);
+    it('/ (POST) with number of viewers successfully', async () => {
+
+      const fakeMatch = new MatchDto();
+      fakeMatch.homeTeam = TEAM.FC_INGOLSTADT;
+      fakeMatch.guestTeam = TEAM.TSV_1860_MUENCHEN;
+      fakeMatch.homeTeamGoals = 2;
+      fakeMatch.guestTeamGoals = 4;
+      fakeMatch.numberOfViewers = 33000;
+
+      const response = await request(app.getHttpServer())
+        .post('/api/match')
+        .send(fakeMatch)
+        .expect(201);
+
+      expect(response.body).toBeDefined();
+    });
+
+    it('/ (POST) failes', async () => {
+      const fakeMatch = {
+        homeTeam: TEAM.FC_INGOLSTADT,
+        guestTeam: TEAM.TSV_1860_MUENCHEN,
+        homeTeamGoals: 1,
+        guestTeamGoals: -2,
+      };
+
+      await request(app.getHttpServer())
+        .post('/api/match')
+        .send(fakeMatch)
+        .expect(400);
+    });
   });
 
   describe(`/ (PUT)`, () => {

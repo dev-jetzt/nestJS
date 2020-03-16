@@ -32,6 +32,11 @@ export class MatchEntity {
     })
     public isMatchFinished: boolean = false;
 
+    @Column({
+        nullable: true,
+    })
+    public numberOfViewers: number;
+
     public static createFromDto(dto: MatchDto): MatchEntity {
         const entity = new MatchEntity();
         entity.homeTeam = dto.homeTeam;
@@ -39,6 +44,7 @@ export class MatchEntity {
         entity.homeTeamGoals = dto.homeTeamGoals;
         entity.guestTeamGoals = dto.guestTeamGoals;
         entity.isMatchFinished = dto.isMatchFinished;
+        entity.numberOfViewers = dto.numberOfViewers;
         return entity;
     }
 }
