@@ -2,8 +2,10 @@ import { Module, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { MatchController } from './match.controller';
 import { MatchService } from './match.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MatchEntity } from './entities/match.entity';
 import { Connection } from 'typeorm';
+import { TableService } from './table.service';
+import { TableController } from './table.controller';
+import { MatchRepository } from './repository/match.repository';
 
 @Module({
   imports: [
@@ -17,10 +19,16 @@ import { Connection } from 'typeorm';
       entities: ['src/**/*.entity.ts'],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([MatchEntity]),
+    TypeOrmModule.forFeature([MatchRepository]),
   ],
-  controllers: [MatchController],
-  providers: [MatchService],
+  controllers: [
+    MatchController,
+    TableController,
+  ],
+  providers: [
+    MatchService,
+    TableService,
+  ],
 })
 export class MatchModule implements OnModuleDestroy, OnModuleInit {
 

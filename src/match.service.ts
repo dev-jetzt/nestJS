@@ -2,14 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { MatchDto } from './dto/match.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchEntity } from './entities/match.entity';
-import { Repository } from 'typeorm';
 import { MatchNotFoundException } from './exceptions/match.notfound.exception';
+import { MatchRepository } from './repository/match.repository';
 
 @Injectable()
 export class MatchService {
 
   constructor(
-    @InjectRepository(MatchEntity) private readonly matchRepository: Repository<MatchEntity>,
+    @InjectRepository(MatchRepository) private readonly matchRepository: MatchRepository,
   ) { }
 
   public async getAllMatches(finished?: boolean): Promise<MatchDto[]> {
