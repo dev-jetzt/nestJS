@@ -2,11 +2,11 @@ import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { v4 as uuidV4 } from 'uuid';
-import { MatchModule } from '../src/match.module';
+import { AppModule } from '../src/app.module';
 import { Connection } from 'typeorm';
-import { MatchEntity } from '../src/entities/match.entity';
-import { MatchDto } from '../src/dto/match.dto';
-import { TEAM } from '../src/dto/team.enum';
+import { MatchEntity } from '../src/modules/match/match.entity';
+import { MatchDto } from '../src/modules/match/match.dto';
+import { TEAM } from '../src/shared/team.enum';
 
 describe('MatchController (e2e)', () => {
 
@@ -15,7 +15,7 @@ describe('MatchController (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [MatchModule],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

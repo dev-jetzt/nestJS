@@ -1,6 +1,6 @@
 import { Repository, EntityRepository, Brackets } from 'typeorm';
-import { MatchEntity } from '../entities/match.entity';
-import { TEAM } from '../dto/team.enum';
+import { MatchEntity } from './match.entity';
+import { TEAM } from '../../shared/team.enum';
 
 @EntityRepository(MatchEntity)
 export class MatchRepository extends Repository<MatchEntity> {

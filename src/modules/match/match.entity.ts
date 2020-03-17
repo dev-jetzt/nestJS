@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { MatchDto } from '../dto/match.dto';
-import { TEAM } from '../dto/team.enum';
+import { MatchDto } from './match.dto';
+import { TEAM } from '../../shared/team.enum';
 
 @Entity()
 export class MatchEntity {

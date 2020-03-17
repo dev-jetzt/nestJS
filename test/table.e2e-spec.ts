@@ -1,10 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
-import { MatchModule } from '../src/match.module';
 import { Connection } from 'typeorm';
-import { MatchEntity } from '../src/entities/match.entity';
-import { TEAM } from '../src/dto/team.enum';
+import { MatchEntity } from '../src/modules/match/match.entity';
+import { TEAM } from '../src/shared/team.enum';
+import { AppModule } from '../src/app.module';
 
 describe('TableController (e2e)', () => {
 
@@ -13,7 +13,7 @@ describe('TableController (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
-      imports: [MatchModule],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

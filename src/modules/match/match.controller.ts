@@ -1,14 +1,14 @@
 import { Get, Controller, Param, Query, Body, Post, UsePipes, ValidationPipe, UseFilters, Put, Patch, Delete, HttpCode } from '@nestjs/common';
 import { MatchService } from './match.service';
-import {MatchDto} from './dto/match.dto';
-import { MatchErrorFilter } from './match.error.filter';
+import { MatchDto } from './match.dto';
+import { GlobalErrorFilter } from '../../global.error.filter';
 import { ParseUUIDPipe } from '@nestjs/common';
 
 @Controller('/api')
 @UsePipes(ValidationPipe)
-@UseFilters(MatchErrorFilter)
+@UseFilters(GlobalErrorFilter)
 export class MatchController {
-  constructor(private readonly matchService: MatchService) {}
+  constructor(private readonly matchService: MatchService) { }
 
   @Get('/matches')
   public async getAllMatches(

@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { TableEntryDto } from './dto/table.dto';
+import { TableEntryDto } from './table.dto';
 import { TableService } from './table.service';
 
 @Controller('/api')

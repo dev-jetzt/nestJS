@@ -1,6 +1,6 @@
-import { MatchEntity } from '../entities/match.entity';
+import { MatchEntity } from './match.entity';
 import { IsNotEmpty, IsString, Max, Min, IsEnum, IsDefined, IsOptional } from 'class-validator';
-import { TEAM } from './team.enum';
+import { TEAM } from '../../shared/team.enum';
 
 export class MatchDto {
 

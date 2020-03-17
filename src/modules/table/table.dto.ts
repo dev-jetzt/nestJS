@@ -1,4 +1,4 @@
-import { TEAM } from './team.enum';
+import { TEAM } from '../../shared/team.enum';
 
 export class TableEntryDto {
     public team: TEAM;

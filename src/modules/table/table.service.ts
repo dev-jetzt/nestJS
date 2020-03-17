@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { TableEntryDto } from './dto/table.dto';
+import { TableEntryDto } from './table.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TEAM } from './dto/team.enum';
-import { MatchRepository } from './repository/match.repository';
+import { TEAM } from '../../shared/team.enum';
+import { MatchRepository } from '../match/match.repository';
 
 @Injectable()
 export class TableService {
