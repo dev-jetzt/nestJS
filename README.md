@@ -68,12 +68,10 @@ $ npm run test:cov
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+## A word about authentication
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+This repository uses authentication in form of `Bearer` tokens. This is the regulat workflow:
 
-## License
-
-  Nest is [MIT licensed](LICENSE).
+1. Create a new user with `POST /api/user`
+2. Login with just created user with `POST /auth/login`
+3. Use `"Bearer <token>"` from the response in other request as `authorization` header

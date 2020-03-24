@@ -7,11 +7,17 @@ import { Connection } from 'typeorm';
 import { MatchEntity } from '../src/modules/match/match.entity';
 import { MatchDto } from '../src/modules/match/match.dto';
 import { TEAM } from '../src/shared/team.enum';
+import { AuthService } from '../src/modules/authmodule/auth.service';
+import { AuthModule } from '../src/modules/authmodule/auth.module';
+import { User } from '../src/modules/usermodule/user.entity';
 
 describe('MatchController (e2e)', () => {
 
   let app: INestApplication;
   let dbConnection: Connection;
+  let authService: AuthService;
+  let testUser: User;
+  let authToken: string;
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -20,8 +26,13 @@ describe('MatchController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     dbConnection = app.get(Connection);
+    authService = app.select(AuthModule).get(AuthService);
 
     await app.init();
+
+    testUser = new User();
+    testUser.password = 'Password-For-Testing';
+    testUser.username = 'Test-Username';
   });
 
   afterAll(async () => {
@@ -30,6 +41,9 @@ describe('MatchController (e2e)', () => {
 
   beforeEach(async () => {
     await dbConnection.synchronize(true);
+    await dbConnection.getRepository(User).save(testUser);
+    const {token} = await authService.validateUser(testUser.username, testUser.password);
+    authToken = token;
   });
 
   describe(`/ (GET)`, () => {
@@ -46,6 +60,7 @@ describe('MatchController (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .get('/api/matches')
+        .set('authorization', `Bearer ${authToken}`)
         .expect(200);
 
       expect(response.body).toHaveLength(1);
@@ -64,6 +79,7 @@ describe('MatchController (e2e)', () => {
       const response = await request(app.getHttpServer())
         .get('/api/matches')
         .query({finished: true})
+        .set('authorization', `Bearer ${authToken}`)
         .expect(200);
 
       expect(response.body).toHaveLength(0);
@@ -83,6 +99,7 @@ describe('MatchController (e2e)', () => {
 
         const response = await request(app.getHttpServer())
           .get(`/api/match/${savedMatch.id}`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(200);
 
         expect(response.body).toBeDefined();
@@ -100,6 +117,7 @@ describe('MatchController (e2e)', () => {
 
         const response = await request(app.getHttpServer())
           .get(`/api/match/${uuidV4()}`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(404);
 
         expect(response.body.just4fun).toBeDefined();
@@ -117,6 +135,7 @@ describe('MatchController (e2e)', () => {
 
         const response = await request(app.getHttpServer())
           .get(`/api/match/invalid`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(400);
 
         expect(response.body.just4fun).toBeDefined();
@@ -137,6 +156,7 @@ describe('MatchController (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/api/match')
+        .set('authorization', `Bearer ${authToken}`)
         .send(fakeMatch)
         .expect(201);
 
@@ -154,6 +174,7 @@ describe('MatchController (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .post('/api/match')
+        .set('authorization', `Bearer ${authToken}`)
         .send(fakeMatch)
         .expect(201);
 
@@ -170,6 +191,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .post('/api/match')
+        .set('authorization', `Bearer ${authToken}`)
         .send(fakeMatch)
         .expect(400);
     });
@@ -193,6 +215,7 @@ describe('MatchController (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .put(`/api/match/${savedMatch.id}`)
+        .set('authorization', `Bearer ${authToken}`)
         .send(updatedMatch)
         .expect(200);
 
@@ -217,6 +240,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .put(`/api/match/${uuidV4()}`)
+        .set('authorization', `Bearer ${authToken}`)
         .send(updatedMatch)
         .expect(404);
     });
@@ -237,6 +261,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .put(`/api/match/${savedMatch.id}`)
+        .set('authorization', `Bearer ${authToken}`)
         .send(updatedMatch)
         .expect(400);
     });
@@ -257,6 +282,7 @@ describe('MatchController (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .patch(`/api/match/${savedMatch.id}/finish`)
+        .set('authorization', `Bearer ${authToken}`)
         .expect(200);
 
       expect(response.body).toBeDefined();
@@ -276,6 +302,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .patch(`/api/match/${uuidV4()}/finish`)
+        .set('authorization', `Bearer ${authToken}`)
         .expect(404);
     });
 
@@ -292,6 +319,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .patch(`/api/match/invalid/finish`)
+        .set('authorization', `Bearer ${authToken}`)
         .expect(400);
     });
   });
@@ -311,6 +339,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .delete(`/api/match/${savedMatch.id}`)
+        .set('authorization', `Bearer ${authToken}`)
         .expect(204);
     });
 
@@ -327,6 +356,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .delete(`/api/match/${uuidV4()}`)
+        .set('authorization', `Bearer ${authToken}`)
         .expect(404);
     });
 
@@ -343,6 +373,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .delete(`/api/match/invalid`)
+        .set('authorization', `Bearer ${authToken}`)
         .expect(400);
     });
 
@@ -361,6 +392,7 @@ describe('MatchController (e2e)', () => {
 
       await request(app.getHttpServer())
         .delete('/api/matches')
+        .set('authorization', `Bearer ${authToken}`)
         .expect(204);
 
       const allMatchesInDb = await dbConnection.getRepository(MatchEntity).find();
@@ -385,6 +417,7 @@ describe('MatchController (e2e)', () => {
 
         await request(app.getHttpServer())
           .patch(`/api/match/invalidID/homegoal`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(400);
       });
 
@@ -401,6 +434,7 @@ describe('MatchController (e2e)', () => {
 
         await request(app.getHttpServer())
           .patch(`/api/match/${uuidV4}/homegoal`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(404);
       });
 
@@ -417,6 +451,7 @@ describe('MatchController (e2e)', () => {
 
         const response = await request(app.getHttpServer())
           .patch(`/api/match/${fakeMatch.id}/homegoal`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(200);
 
         expect(response.body.homeTeamGoals).toBe(1);
@@ -440,6 +475,7 @@ describe('MatchController (e2e)', () => {
 
         await request(app.getHttpServer())
           .patch(`/api/match/invalidID/guestgoal`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(400);
       });
 
@@ -456,6 +492,7 @@ describe('MatchController (e2e)', () => {
 
         await request(app.getHttpServer())
           .patch(`/api/match/${uuidV4}/guestgoal`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(404);
       });
 
@@ -472,6 +509,7 @@ describe('MatchController (e2e)', () => {
 
         const response = await request(app.getHttpServer())
           .patch(`/api/match/${fakeMatch.id}/guestgoal`)
+          .set('authorization', `Bearer ${authToken}`)
           .expect(200);
 
         expect(response.body.homeTeamGoals).toBe(0);

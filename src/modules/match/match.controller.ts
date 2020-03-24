@@ -1,12 +1,15 @@
-import { Get, Controller, Param, Query, Body, Post, UsePipes, ValidationPipe, UseFilters, Put, Patch, Delete, HttpCode } from '@nestjs/common';
+// tslint:disable-next-line:max-line-length
+import { Get, Controller, Param, Query, Body, Post, UsePipes, ValidationPipe, UseFilters, Put, Patch, Delete, HttpCode, UseGuards, Request } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { MatchDto } from './match.dto';
 import { GlobalErrorFilter } from '../../global.error.filter';
 import { ParseUUIDPipe } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/api')
 @UsePipes(ValidationPipe)
 @UseFilters(GlobalErrorFilter)
+@UseGuards(AuthGuard('token'))
 export class MatchController {
   constructor(private readonly matchService: MatchService) { }
 
