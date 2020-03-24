@@ -70,8 +70,12 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## A word about authentication
 
-This repository uses authentication in form of `Bearer` tokens. This is the regulat workflow:
+This project uses authentication in form of `Bearer` tokens. This is the regulat workflow:
 
 1. Create a new user with `POST /api/user`
 2. Login with just created user with `POST /auth/login`
 3. Use `"Bearer <token>"` from the response in other request as `authorization` header
+
+## Authorization
+
+This project uses authorizaztion, as well, by using guards. All users are role `USER` as default but the endpoint to create a new match (`POST /api/match`) requires an `ADMIN` user.

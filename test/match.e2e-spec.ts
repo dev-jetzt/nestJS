@@ -10,6 +10,7 @@ import { TEAM } from '../src/shared/team.enum';
 import { AuthService } from '../src/modules/authmodule/auth.service';
 import { AuthModule } from '../src/modules/authmodule/auth.module';
 import { User } from '../src/modules/usermodule/user.entity';
+import { USER_ROLE } from '../src/modules/usermodule/user.roles';
 
 describe('MatchController (e2e)', () => {
 
@@ -33,6 +34,7 @@ describe('MatchController (e2e)', () => {
     testUser = new User();
     testUser.password = 'Password-For-Testing';
     testUser.username = 'Test-Username';
+    testUser.role = USER_ROLE.ADMIN;
   });
 
   afterAll(async () => {

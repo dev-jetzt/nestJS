@@ -5,11 +5,16 @@ import { MatchDto } from './match.dto';
 import { GlobalErrorFilter } from '../../global.error.filter';
 import { ParseUUIDPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Role, RoleGuard } from '../authmodule/role.guard';
+import { USER_ROLE } from '../usermodule/user.roles';
 
 @Controller('/api')
 @UsePipes(ValidationPipe)
 @UseFilters(GlobalErrorFilter)
-@UseGuards(AuthGuard('token'))
+@UseGuards(
+  AuthGuard('token'),
+  RoleGuard,
+)
 export class MatchController {
   constructor(private readonly matchService: MatchService) { }
 
@@ -26,6 +31,7 @@ export class MatchController {
   }
 
   @Post('/match')
+  @Role(USER_ROLE.ADMIN)
   public async createNewMatch(
     @Body() newMatch: MatchDto,
   ): Promise<MatchDto> {

@@ -1,4 +1,5 @@
-import { IsDefined, IsString, Min } from 'class-validator';
+import { IsDefined, IsString, Min, IsEnum } from 'class-validator';
+import { USER_ROLE } from '../user.roles';
 
 export class UserRequestDto {
 
@@ -10,4 +11,8 @@ export class UserRequestDto {
     @IsString()
     @Min(6)
     public password: string;
+
+    @IsDefined()
+    @IsEnum(USER_ROLE)
+    public role: USER_ROLE;
 }
