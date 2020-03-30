@@ -79,3 +79,71 @@ This project uses authentication in form of `Bearer` tokens. This is the regulat
 ## Authorization
 
 This project uses authorizaztion, as well, by using guards. All users are role `USER` as default but the endpoint to create a new match (`POST /api/match`) requires an `ADMIN` user.
+
+## Debugging
+In order to debug start the debugger with
+```bash
+$ yarn start:debug // or npm run start:debug
+```
+
+You will see some output, similar to this (IPs and ports might be different):
+```bash
+$ yarn start:debug
+yarn run v1.22.0
+$ nodemon --config nodemon-debug.json
+[nodemon] 1.19.4
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching dir(s): src/**/*
+[nodemon] watching extensions: ts
+[nodemon] starting `node --inspect-brk -r ts-node/register src/main.ts`
+Debugger listening on ws://127.0.0.1:9229/76bf2046-269d-44e5-9e9d-0be1132569d4
+For help, see: https://nodejs.org/en/docs/inspector
+```
+
+Now to start the debugger in VSCode by openinig the debugger menu in the left menu bar, select `Debug NestJS` configuration hit the green arrow and select the process that references `main.ts` and uses the port printed by the prior command (it's `9229` in this case). It might happen that the debugger stops in a `helper.js` file. Just tell the debugger to continue and you will see in the console that the application starts like usual but witht debugger attached:
+
+```bash
+$ yarn start:debug
+yarn run v1.22.0
+$ nodemon --config nodemon-debug.json
+[nodemon] 1.19.4
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching dir(s): src/**/*
+[nodemon] watching extensions: ts
+[nodemon] starting `node --inspect-brk -r ts-node/register src/main.ts`
+Debugger listening on ws://127.0.0.1:9229/cdbf5199-2ed3-4063-b367-6207277bccaa
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [NestFactory] Starting Nest application...
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] AppModule dependencies initialized +101ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] TypeOrmModule dependencies initialized +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] PassportModule dependencies initialized +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] TypeOrmCoreModule dependencies initialized +113ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] TypeOrmModule dependencies initialized +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] DatabaseModule dependencies initialized +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] TableModule dependencies initialized +15ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] UserModule dependencies initialized +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] MatchModule dependencies initialized +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [InstanceLoader] AuthModule dependencies initialized +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RoutesResolver] MatchController {/api}: +4ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/matches, GET} route +3ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/match/:matchId, GET} route +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/match, POST} route +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/match/:id, PUT} route +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/match/:id/finish, PATCH} route +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/match/:id/homegoal, PATCH} route +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/match/:id/guestgoal, PATCH} route +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/match/:id, DELETE} route +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/matches, DELETE} route +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RoutesResolver] TableController {/api}: +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/table, GET} route +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RoutesResolver] UserController {/api/user}: +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/, POST} route +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RoutesResolver] AuthController {/auth}: +1ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [RouterExplorer] Mapped {/login, POST} route +0ms
+[Nest] 49697   - 03/30/2020, 9:07:41 AM   [NestApplication] Nest application successfully started +87ms
+Listening on port 3000
+```
+
+Given any breakpoints are set, you are now able to tigger some HTTP calls and the VSCode debugger will stop at breakpoints.
